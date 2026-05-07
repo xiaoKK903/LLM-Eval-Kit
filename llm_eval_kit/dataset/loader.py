@@ -31,11 +31,13 @@ class DatasetLoader:
         self.data_path = data_path
         self._samples: List[EvaluationSample] = []
 
-    def load(self) -> List[EvaluationSample]:
+    def load(self, max_samples: Optional[int] = None) -> List[EvaluationSample]:
         self._samples = []
         try:
             with open(self.data_path, 'r', encoding='utf-8') as f:
                 for line_num, line in enumerate(f, 1):
+                    if max_samples is not None and len(self._samples) >= max_samples:
+                        break
                     line = line.strip()
                     if not line:
                         continue
