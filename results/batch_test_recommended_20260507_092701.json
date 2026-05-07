@@ -1,0 +1,74 @@
+{
+  "test_mode": "recommended",
+  "timestamp": "2026-05-07T09:27:01.993911",
+  "total_models": 6,
+  "successful_models": 6,
+  "results": [
+    {
+      "model": "qwen-turbo",
+      "description": "千问Turbo(高速版)",
+      "provider": "qwen",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 6.308180212974548,
+      "total_tokens": 1026,
+      "avg_response_length": 882.0,
+      "timestamp": "2026-05-07T09:23:37.735427"
+    },
+    {
+      "model": "qwen-plus",
+      "description": "千问Plus(增强版)",
+      "provider": "qwen",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 13.767334938049316,
+      "total_tokens": 1178,
+      "avg_response_length": 888.5,
+      "timestamp": "2026-05-07T09:24:05.834300"
+    },
+    {
+      "model": "qwen-max",
+      "description": "千问Max(最强版)",
+      "provider": "qwen",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 40.83113932609558,
+      "total_tokens": 503,
+      "avg_response_length": 445.5,
+      "timestamp": "2026-05-07T09:25:28.054988"
+    },
+    {
+      "model": "deepseek-chat",
+      "description": "DeepSeek对话模型",
+      "provider": "deepseek",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 11.379819750785828,
+      "total_tokens": 1378,
+      "avg_response_length": 1269.0,
+      "timestamp": "2026-05-07T09:25:51.460246"
+    },
+    {
+      "model": "deepseek-coder",
+      "description": "DeepSeek代码模型",
+      "provider": "deepseek",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 10.61068046092987,
+      "total_tokens": 1308,
+      "avg_response_length": 1154.0,
+      "timestamp": "2026-05-07T09:26:13.246486"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "description": "DeepSeek V4专业版",
+      "provider": "deepseek",
+      "success": true,
+      "samples_tested": 2,
+      "avg_latency": 24.072646975517273,
+      "total_tokens": 1524,
+      "avg_response_length": 733.5,
+      "timestamp": "2026-05-07T09:27:01.989800"
+    }
+  ]
+}

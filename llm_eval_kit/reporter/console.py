@@ -5,7 +5,7 @@ This module provides functionality to display evaluation results in a formatted
 table format in the console.
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 
 
@@ -19,6 +19,9 @@ class EvaluationResult:
     latency: float
     token_usage: Dict[str, int]
     model: str
+    quality_scores: Dict[str, float] = None
+    cost: float = 0.0
+    scoring_result: Optional[Dict[str, Any]] = None
 
 
 class ConsoleReporter:
@@ -67,12 +70,48 @@ class ConsoleReporter:
         total_prompt_tokens = sum(result.token_usage.get("prompt_tokens", 0) for result in results)
         total_completion_tokens = sum(result.token_usage.get("completion_tokens", 0) for result in results)
         
+        # Calculate quality scores and cost
+        total_cost = sum(result.cost for result in results)
+        avg_cost = total_cost / total_samples if total_samples > 0 else 0
+        
+        # Calculate average quality scores
+        quality_metrics = {}
+        if results and results[0].quality_scores:
+            for metric in results[0].quality_scores.keys():
+                scores = [r.quality_scores.get(metric, 0) for r in results if r.quality_scores]
+                if scores:
+                    quality_metrics[metric] = sum(scores) / len(scores)
+        
+        # Calculate scoring metrics if available
+        scoring_metrics = {}
+        if results and results[0].scoring_result:
+            scoring_results = [r.scoring_result for r in results if r.scoring_result]
+            if scoring_results:
+                total_scoring_score = sum(r.get("total_score", 0) for r in scoring_results)
+                avg_scoring_score = total_scoring_score / len(scoring_results)
+                scoring_metrics["average_score"] = avg_scoring_score
+        
         print(f"\nSummary:")
         print(f"  Total Samples: {total_samples}")
         print(f"  Average Latency: {avg_latency:.2f}s")
         print(f"  Total Tokens: {total_tokens}")
         print(f"    - Prompt Tokens: {total_prompt_tokens}")
         print(f"    - Completion Tokens: {total_completion_tokens}")
+        
+        # Show quality scores
+        if quality_metrics:
+            print(f"  Quality Scores:")
+            for metric, score in quality_metrics.items():
+                print(f"    - {metric}: {score:.2f}")
+        
+        # Show scoring results
+        if scoring_metrics:
+            print(f"  Scoring Results:")
+            print(f"    - Average Score: {scoring_metrics['average_score']:.3f}")
+        
+        # Show cost information
+        print(f"  Total Cost: ${total_cost:.4f}")
+        print(f"  Average Cost per Sample: ${avg_cost:.4f}")
         
         # Show model information
         models = set(result.model for result in results)
@@ -95,6 +134,13 @@ class ConsoleReporter:
                   f"(P: {result.token_usage.get('prompt_tokens', 0)}, "
                   f"C: {result.token_usage.get('completion_tokens', 0)})")
             print(f"  Model: {result.model}")
+            
+            # Print scoring results if available
+            if result.scoring_result:
+                score = result.scoring_result.get("total_score", 0)
+                reasoning = result.scoring_result.get("reasoning", "")
+                print(f"  Score: {score:.3f}")
+                print(f"  Reasoning: {self._truncate_text(reasoning, 50)}")
             
             # Print full text if it was truncated
             if len(result.question) > 60:
@@ -134,4 +180,21 @@ class ConsoleReporter:
         print(f"Latency: {result.latency:.2f}s")
         print(f"Tokens: {result.token_usage.get('total_tokens', 0)}")
         print(f"Model: {result.model}")
+        
+        # Print detailed scoring information
+        if result.scoring_result:
+            print(f"\nScoring Details:")
+            print(f"  Total Score: {result.scoring_result.get('total_score', 0):.3f}")
+            print(f"  Reasoning: {result.scoring_result.get('reasoning', '')}")
+            
+            # Print detailed breakdown if available
+            details = result.scoring_result.get('details', {})
+            if details:
+                print(f"  Details:")
+                for key, value in details.items():
+                    if isinstance(value, float):
+                        print(f"    - {key}: {value:.3f}")
+                    else:
+                        print(f"    - {key}: {value}")
+        
         print("-"*40)
