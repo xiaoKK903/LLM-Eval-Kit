@@ -1,30 +1,9 @@
 # llm-eval-kit
 
-> 轻量级 LLM 业务评测工具，帮工程师量化模型/Prompt 改动的效果差异
+轻量级 LLM 业务评测工具箱  
+量化模型效果、Prompt 改动、成本耗时，不靠感觉靠数据。
 
-![报告截图](docs/images/report_demo.png)
-
-## 它解决什么问题
-
-工程师在做大模型应用时，经常面对这些问题：
-
-- 换了模型，效果到底变好还是变差？
-- 改了 Prompt，怎么证明这次迭代有价值？
-- 几个模型同时备选，哪个性价比最高？
-
-llm-eval-kit 用代码 + 数据回答这些问题，不靠感觉。
-
-## 功能
-
-- 并发评测：异步并发调用多个模型，速度提升 4 倍以上
-- 规则评分：关键词命中率 + 长度合理性
-- LLM Judge：用模型评模型，多维度打分，消除位置偏差
-- 多模型对比：自动输出最优、最快、最便宜、性价比最高
-- HTML 报告：一键生成可视化报告，方便汇报和归档
-
-## 快速开始
-
-### 安装
+## 安装
 
 ```bash
 git clone https://github.com/xiaoKK903/LLM-Eval-Kit
@@ -32,89 +11,99 @@ cd LLM-Eval-Kit
 pip install -e .
 ```
 
-### 准备数据
+只需要 httpx 和 jieba，没有重型依赖。
 
-新建 `data.jsonl`：
+## 快速开始
 
-```jsonl
-{"id": "001", "question": "退款多久到账？", "reference": "3-5个工作日"}
-{"id": "002", "question": "怎么改密码？", "reference": "在设置页面修改"}
+### 命令行一键评测
+
+```bash
+llm-eval-kit eval \
+  --model deepseek-chat \
+  --api-key sk-xxx \
+  --data data.jsonl \
+  --base-url https://api.deepseek.com/v1
 ```
 
-### 运行评测
+### Python API（三行代码跑评测）
 
 ```python
-import json, asyncio
-from llm_eval_kit.adapters.openai_compatible import OpenAICompatibleHttpxAdapter
-from llm_eval_kit.scorers.rule_scorer import RuleScorer
-from llm_eval_kit.reporter.comparator import ModelComparator
-from llm_eval_kit.reporter.html_reporter import HtmlReporter
+import asyncio
+from llm_eval_kit import Evaluator
 
-async def main():
-    samples = [json.loads(l) for l in open("data.jsonl")]
-
-    adapter = OpenAICompatibleHttpxAdapter(
-        base_url="https://api.deepseek.com/v1",
-        api_key="sk-your-key",
-        model="deepseek-chat"
-    )
-    evals = await adapter.batch_call([s["question"] for s in samples])
-
-    scorer = RuleScorer()
-    for e, s in zip(evals, samples):
-        e.scoring_result = scorer.score(e.response, s.get("reference", ""))
-
-    cmp = ModelComparator().compare_models({"deepseek-chat": evals})
-    HtmlReporter().generate(cmp, "客服问答评测", "report.html")
-    print("✅ report.html 已生成")
-
-asyncio.run(main())
+evaluator = Evaluator()
+result = asyncio.run(evaluator.run(
+    models=[{"model": "deepseek-chat", "api_key": "sk-xxx", "base_url": "https://api.deepseek.com/v1"}],
+    data_path="data.jsonl",
+))
 ```
 
-> 替换 `api_key` 即可直接运行。如需对比多个模型，在 `compare_models` 中传入更多结果即可。
+输出自动包含：综合评分、延迟、Token 消耗、成本（¥）。
 
-## 支持的模型
+## 示例
 
-理论上支持所有兼容 OpenAI 接口的模型。
+| 场景 | 文件 |
+|------|------|
+| 规则评分（纯本地，无需 API） | `examples/rule_scorer_demo.py` |
+| 单模型评测 | `examples/basic_usage.py` |
+| 多模型对比 | `examples/multi_model_compare.py` |
 
-已测试：
-- DeepSeek（deepseek-chat、deepseek-coder）
-- 千问（qwen-turbo、qwen-plus、qwen-max）
-- OpenAI（gpt-3.5-turbo、gpt-4）
+## 数据格式
 
-只要模型提供 OpenAI 兼容接口，配置 `base_url` 和 `api_key` 即可。
+JSONL，每行一个样本：
 
-## 评分方式
+```jsonl
+{"id": "1", "question": "退款多久到账？", "reference": "3-5个工作日", "expected_keywords": ["退款", "到账"]}
+{"id": "2", "question": "怎么改密码？", "reference": "在设置页面修改", "expected_keywords": ["设置", "修改"]}
+```
 
-### 规则评分
+- `id` / `question`：必填
+- `reference`：参考答案，用于评分对比
+- `expected_keywords`：关键词列表，规则评分用
 
-基于关键词命中率和长度合理性，毫秒级响应，适合大批量数据初筛。
+## 评分引擎
 
-### LLM Judge
+**规则评分**：关键词命中 + 长度合理性 + 结构质量 + 完整度，毫秒级，零外部依赖。
 
-用一个模型评测另一个模型的回答，从准确性、完整性、简洁性三个维度打分。
+**LLM Judge**：用模型评模型，准确性/完整性/简洁性三维打分。  
+自动消除位置偏差——每条数据正反顺序各 Judge 一次，取平均。
 
-为消除位置偏差，每条数据 Judge 两次（参考答案在前/在后），取平均分。
+两种方式可在同一个评估流程中一键切换。
 
 ## 项目结构
 
 ```
 llm_eval_kit/
-├── adapters/       # 模型适配器
-├── dataset/        # 数据加载
-├── scorers/        # 评分器
-├── reporter/       # 报告生成
-└── client.py       # 主入口
+├── adapters/          模型适配（OpenAI 兼容接口）
+│   ├── base.py
+│   └── openai_compat.py
+├── scorers/           评分引擎
+│   ├── base.py
+│   ├── rule_scorer.py
+│   └── llm_judge.py
+├── dataset/           数据集加载
+│   └── loader.py
+├── reporter/          报表输出
+│   ├── console_reporter.py
+│   ├── comparator.py
+│   └── models.py
+├── core/              核心调度
+│   └── evaluator.py
+├── utils/             工具函数
+│   ├── cost_calc.py
+│   └── common.py
+├── __init__.py
 ```
 
-## 开发计划
+不重依赖、不用笨重框架，Python 原生 + httpx。
 
-- [x] 多模型并发评测
-- [x] 规则评分 + LLM Judge
-- [x] HTML 报告生成
-- [ ] CLI 命令行工具
-- [ ] 评测历史对比（版本回归）
-- [ ] PyPI 发布
+## 已测试模型
+
+- DeepSeek（deepseek-chat, deepseek-coder）
+- 千问（qwen-turbo, qwen-plus, qwen-max）
+- OpenAI（gpt-3.5-turbo, gpt-4, gpt-4-turbo）
+
+兼容所有 OpenAI 接口的模型，配置 `base_url` + `api_key` 即用。
 
 ## License
 

@@ -1,180 +1,145 @@
 """
 Rule-based scoring for LLM responses.
 
-This module provides a rule-based scoring system that evaluates responses
-based on keyword matching and length appropriateness.
+Evaluates responses on: keyword match, length appropriateness,
+structure quality, relevance, completeness.
+All dimensions are Chinese-business-scenario optimized.
 """
 
 import re
 import jieba
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 from .base import BaseScorer, ScoreResult
 
 
 class RuleScorer(BaseScorer):
-    """Rule-based scorer using keyword matching and length analysis."""
-    
-    def __init__(self, keyword_weight: float = 0.8, length_weight: float = 0.2):
-        """
-        Initialize the rule scorer.
-        
-        Args:
-            keyword_weight: Weight for keyword matching score (default: 0.8)
-            length_weight: Weight for length appropriateness score (default: 0.2)
-        """
+    """Multi-dimension rule scorer for Chinese business scenarios."""
+
+    def __init__(self, keyword_weight: float = 0.4, length_weight: float = 0.1,
+                 structure_weight: float = 0.2, completeness_weight: float = 0.3):
+        total = keyword_weight + length_weight + structure_weight + completeness_weight
+        if abs(total - 1.0) > 0.001:
+            raise ValueError(f"Weights must sum to 1.0, got {total}")
         self.keyword_weight = keyword_weight
         self.length_weight = length_weight
-        
-        # Validate weights
-        if abs(keyword_weight + length_weight - 1.0) > 0.001:
-            raise ValueError("Weights must sum to 1.0")
-    
+        self.structure_weight = structure_weight
+        self.completeness_weight = completeness_weight
+
+    # ── public API ──────────────────────────────────────────
+
+    async def score(self, question: str, response: str, reference: Optional[str] = None,
+                    expected_keywords: Optional[List[str]] = None) -> ScoreResult:
+        scores = {
+            "keyword_score": self._calc_keyword_score(response, reference or "", expected_keywords),
+            "length_score": self._calc_length_score(response),
+            "structure_score": self._calc_structure_score(response),
+            "completeness_score": self._calc_completeness_score(question, response),
+        }
+
+        total = (scores["keyword_score"] * self.keyword_weight +
+                 scores["length_score"] * self.length_weight +
+                 scores["structure_score"] * self.structure_weight +
+                 scores["completeness_score"] * self.completeness_weight)
+
+        details = {
+            "keyword_match": round(scores["keyword_score"], 4),
+            "length_appropriateness": round(scores["length_score"], 4),
+            "structure_quality": round(scores["structure_score"], 4),
+            "completeness": round(scores["completeness_score"], 4),
+        }
+
+        reasoning = (
+            f"关键词匹配: {details['keyword_match']:.2f} | "
+            f"长度: {details['length_appropriateness']:.2f} | "
+            f"结构: {details['structure_quality']:.2f} | "
+            f"完整度: {details['completeness']:.2f}"
+        )
+
+        return ScoreResult(total_score=round(total, 4), details=details, reasoning=reasoning)
+
+    # ── keyword matching ─────────────────────────────────────
+
     def _extract_keywords(self, text: str) -> list:
-        """
-        Extract keywords from text using jieba segmentation.
-        
-        Args:
-            text: Input text to extract keywords from
-            
-        Returns:
-            List of keywords (excluding stop words and short words)
-        """
-        # Chinese stop words (simplified list)
         stop_words = {
             '的', '了', '在', '是', '我', '有', '和', '就', '不', '人', '都', '一', '一个',
             '上', '也', '很', '到', '说', '要', '去', '你', '会', '着', '没有', '看', '好',
-            '自己', '这', '那', '他', '她', '它', '我们', '你们', '他们', '这个', '那个'
+            '自己', '这', '那', '他', '她', '它', '我们', '你们', '他们', '这个', '那个',
+            '吗', '吧', '啊', '呢', '哦', '嗯', '哈', '呀', '嘛', '么',
         }
-        
-        # Use jieba for Chinese word segmentation
         words = jieba.cut(text)
-        
-        # Filter out stop words and short words
         keywords = []
         for word in words:
             word = word.strip()
-            if (len(word) >= 2 and 
-                word not in stop_words and 
-                not word.isdigit() and
-                not all(c in '，。！？；：""''（）【】《》' for c in word)):
+            if (len(word) >= 2 and word not in stop_words and not word.isdigit()
+                    and not all(c in '，。！？；：""''（）【】《》' for c in word)):
                 keywords.append(word)
-        
         return keywords
-    
-    def _calculate_keyword_score(self, response: str, reference: str) -> float:
-        """
-        Calculate keyword matching score.
-        
-        Args:
-            response: Model response text
-            reference: Reference answer text
-            
-        Returns:
-            Keyword matching score (0-1)
-        """
-        # Extract keywords from reference
-        ref_keywords = self._extract_keywords(reference)
-        
-        if not ref_keywords:
-            # If no keywords found, return neutral score
+
+    def _calc_keyword_score(self, response: str, reference: str,
+                            expected_keywords: Optional[List[str]] = None) -> float:
+        if expected_keywords:
+            target = expected_keywords
+        else:
+            target = self._extract_keywords(reference)
+
+        if not target:
             return 0.5
-        
-        # Extract keywords from response
+
         resp_keywords = self._extract_keywords(response)
-        
-        # Calculate matching score
-        matched_count = 0
-        for keyword in ref_keywords:
-            if keyword in resp_keywords:
-                matched_count += 1
-        
-        keyword_score = matched_count / len(ref_keywords)
-        return min(1.0, keyword_score)
-    
-    def _calculate_length_score(self, response: str) -> float:
-        """
-        Calculate length appropriateness score.
-        
-        Args:
-            response: Model response text
-            
-        Returns:
-            Length score (0-1)
-        """
-        length = len(response.strip())
-        
-        # Score based on length appropriateness
-        if length < 10:
-            # Too short - linear penalty
-            return max(0.0, length / 10)
-        elif length > 500:
-            # Too long - exponential penalty
-            excess = length - 500
-            penalty = min(1.0, excess / 1000)  # Cap penalty at 1.0
-            return max(0.0, 1.0 - penalty)
-        else:
-            # Within ideal range
-            if length <= 100:
-                # 10-100 characters: linear scoring
-                return 0.5 + (length - 10) / 180  # 0.5 to 1.0
-            else:
-                # 100-500 characters: slight penalty for longer responses
-                return 1.0 - ((length - 100) / 400) * 0.2  # 1.0 to 0.8
-    
-    def score(self, question: str, response: str, reference: str) -> ScoreResult:
-        """
-        Score a model response using rule-based criteria.
-        
-        Args:
-            question: The original question asked
-            response: The model's response
-            reference: The reference (correct) answer
-            
-        Returns:
-            ScoreResult containing the score and reasoning
-        """
-        # Calculate individual scores
-        keyword_score = self._calculate_keyword_score(response, reference)
-        length_score = self._calculate_length_score(response)
-        
-        # Calculate weighted total score
-        total_score = (keyword_score * self.keyword_weight + 
-                      length_score * self.length_weight)
-        
-        # Prepare detailed breakdown
-        details = {
-            "keyword_score": keyword_score,
-            "length_score": length_score,
-            "keyword_weight": self.keyword_weight,
-            "length_weight": self.length_weight,
-            "response_length": len(response.strip())
-        }
-        
-        # Generate reasoning
-        reasoning_parts = []
-        
-        # Keyword reasoning
-        if keyword_score >= 0.8:
-            reasoning_parts.append("关键词匹配良好")
-        elif keyword_score >= 0.5:
-            reasoning_parts.append("关键词匹配一般")
-        else:
-            reasoning_parts.append("关键词匹配较差")
-        
-        # Length reasoning
-        length = len(response.strip())
-        if length < 10:
-            reasoning_parts.append("回答过短")
-        elif length > 500:
-            reasoning_parts.append("回答过长")
-        else:
-            reasoning_parts.append("回答长度适中")
-        
-        reasoning = "; ".join(reasoning_parts)
-        
-        return ScoreResult(
-            total_score=total_score,
-            details=details,
-            reasoning=reasoning
-        )
+        matched = sum(1 for k in target if k in resp_keywords)
+        return min(1.0, matched / len(target))
+
+    # ── length appropriateness ──────────────────────────────
+
+    def _calc_length_score(self, response: str) -> float:
+        length = len(response)
+        if length < 20:
+            return 0.0
+        if length < 100:
+            return length / 100
+        if length <= 500:
+            return 1.0
+        if length <= 1000:
+            return 1.0 - (length - 500) / 500 * 0.3
+        return max(0.2, 1.0 - (length - 1000) / 1000 * 0.5)
+
+    # ── structure quality ──────────────────────────────────
+
+    def _calc_structure_score(self, response: str) -> float:
+        score = 0.0
+        if re.search(r'(^|\n)#{1,3}\s', response):
+            score += 0.3
+        if re.search(r'\d+\.\s', response):
+            score += 0.2
+        if re.search(r'[-*]\s', response):
+            score += 0.2
+        if re.search(r'\*\*.*?\*\*', response):
+            score += 0.1
+        paragraphs = [p for p in response.split('\n\n') if p.strip()]
+        if len(paragraphs) >= 2:
+            score += 0.2
+        return min(1.0, score)
+
+    # ── completeness (Chinese business keywords) ─────────────
+
+    def _calc_completeness_score(self, question: str, response: str) -> float:
+        indicators = [
+            ('总结', 0.15), ('建议', 0.15), ('步骤', 0.15), ('原因', 0.15),
+            ('注意', 0.1), ('方案', 0.1), ('说明', 0.1), ('例如', 0.1),
+        ]
+        score = 0.0
+        resp_lower = response.lower()
+        for indicator, weight in indicators:
+            if indicator in resp_lower:
+                score += weight
+        if len(response) > 300 and score > 0.3:
+            score += 0.1
+        return min(1.0, score)
+
+
+class QualityScorer(RuleScorer):
+    """Legacy alias for RuleScorer with equal-weight defaults."""
+    def __init__(self):
+        super().__init__(keyword_weight=0.25, length_weight=0.25,
+                         structure_weight=0.25, completeness_weight=0.25)

@@ -163,6 +163,9 @@ cython_debug/
 # VSCode
 .vscode/
 
+# Generated reports
+reports/
+
 # Local configuration files
 config.local.yaml
 *.local.yaml

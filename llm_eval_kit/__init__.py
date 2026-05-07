@@ -1,14 +1,28 @@
 """
-LLM-Eval-Kit: A lightweight LLM evaluation toolkit for business scenarios.
+LLM-Eval-Kit: 中文轻量业务 LLM 评测工具箱
 
-This package provides tools for evaluating LLM performance in business contexts,
-including prompt changes, model comparisons, and RAG system effectiveness.
+Usage:
+    from llm_eval_kit import Evaluator
+
+    evaluator = Evaluator()
+    result = await evaluator.run(
+        models=[{...}],
+        data_path="data.jsonl"
+    )
 """
 
-from .client import EvalClient, run_evaluation
-from .dataset.loader import DatasetLoader
-from .adapters.openai_compatible import OpenAICompatibleHttpxAdapter
-from .reporter.console import ConsoleReporter
+from .core.evaluator import Evaluator, EvalConfig
+from .adapters import OpenAICompatibleAdapter
+from .scorers import RuleScorer, QualityScorer, LLMJudgeScorer
+from .dataset import DatasetLoader
+from .reporter import ConsoleReporter
 
 __version__ = "0.1.0"
-__all__ = ["EvalClient", "run_evaluation", "DatasetLoader", "OpenAICompatibleHttpxAdapter", "ConsoleReporter"]
+
+__all__ = [
+    "Evaluator", "EvalConfig",
+    "OpenAICompatibleAdapter",
+    "RuleScorer", "QualityScorer", "LLMJudgeScorer",
+    "DatasetLoader",
+    "ConsoleReporter",
+]

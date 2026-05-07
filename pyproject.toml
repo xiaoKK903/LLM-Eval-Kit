@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "llm-eval-kit"
 version = "0.1.0"
-description = "A lightweight LLM evaluation toolkit for business scenarios"
+description = "中文轻量业务 LLM 评测工具箱"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "llm-eval-kit"}
 ]
 readme = "README.md"
 license = {text = "MIT"}
@@ -24,9 +24,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "openai>=1.0.0",
     "httpx>=0.24.0",
-    "python-dotenv>=1.0.0",
     "jieba>=0.42.0",
 ]
 
@@ -34,17 +32,10 @@ dependencies = [
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
 ]
 
-[project.urls]
-Homepage = "https://github.com/your-username/llm-eval-kit"
-Repository = "https://github.com/your-username/llm-eval-kit"
-"Bug Reports" = "https://github.com/your-username/llm-eval-kit/issues"
+[project.scripts]
+llm-eval-kit = "llm_eval_kit.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
-
-[tool.setuptools.package-data]
-"llm_eval_kit" = ["*.py", "**/*.py"]
+include = ["llm_eval_kit*"]

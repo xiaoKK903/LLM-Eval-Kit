@@ -1,11 +1,4 @@
-"""
-Model adapters for different LLM providers.
+from .base import BaseAdapter, ModelResponse
+from .openai_compat import OpenAICompatibleAdapter
 
-This module provides adapters for various LLM APIs, with a focus on
-OpenAI-compatible interfaces that cover most modern LLM providers.
-"""
-
-from .openai_compatible import OpenAICompatibleHttpxAdapter
-from .multi_provider_adapter import MultiProviderAdapter
-
-__all__ = ["OpenAICompatibleHttpxAdapter", "MultiProviderAdapter"]
+__all__ = ["BaseAdapter", "ModelResponse", "OpenAICompatibleAdapter"]
