@@ -115,7 +115,7 @@ MIT
 > Quantify the impact of model changes and prompt iterations.
 
 <p align="center">
-  <img src="docs/images/report_demo.png" alt="Report Screenshot" width="700">
+  <img src="docs/images/report_demo_en.png" alt="Report Screenshot" width="700">
 </p>
 
 ---
