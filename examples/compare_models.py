@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from llm_eval_kit.client import EvalClient, EvaluationConfig
 from llm_eval_kit.scorers import RuleScorer
 from llm_eval_kit.reporter.console import ConsoleReporter
-from llm_eval_kit.adapters.openai_compatible_httpx import OpenAICompatibleHttpxAdapter
+from llm_eval_kit.adapters.openai_compatible import OpenAICompatibleHttpxAdapter
 from llm_eval_kit.dataset.loader import EvaluationSample
 
 
@@ -162,21 +162,19 @@ async def demo_with_mock_data(test_samples):
     # Create mock results
     mock_results = []
     
-    # Mock responses for qwen-turbo
+    # Mock responses for each model
     qwen_responses = [
-        "您好，退款将在3到5个工作日内处理完成。",
-        "请到个人中心的设置菜单里修改您的登录密码。",
-        "很抱歉，我无法提供具体的客服电话信息。"
+        "退款通常需要3-5个工作日处理完成。",
+        "您可以在设置页面的安全选项中修改密码。",
+        "客服电话是400-123-4567，工作时间9:00-18:00。"
     ]
     
-    # Mock responses for deepseek-chat
     deepseek_responses = [
-        "退款处理通常需要3到5个工作日，具体时间可能因银行处理速度而有所不同。",
-        "您可以在账户设置中找到安全选项，点击修改密码进行密码更改操作。",
-        "客服电话是400-123-4567，服务时间为工作日9:00-18:00。"
+        "退款处理时间一般为3到5个工作日，具体时间可能因银行而异。",
+        "修改密码的方法：进入设置页面，找到安全选项，点击修改密码进行设置。",
+        "我们的客服电话是400-123-4567，如有问题欢迎随时联系。"
     ]
     
-    # Create mock evaluation results
     for i, sample in enumerate(test_samples):
         # Qwen-turbo results
         qwen_result = EvaluationResult(

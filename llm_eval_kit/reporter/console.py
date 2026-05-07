@@ -288,28 +288,3 @@ class ConsoleReporter:
               f"{max(c.avg_latency for c in comparison_result.model_comparisons):.1f}s")
         print(f"   成本范围: ¥{min(c.total_cost for c in comparison_result.model_comparisons):.4f} - " +
               f"¥{max(c.total_cost for c in comparison_result.model_comparisons):.4f}")
-        
-        print(f"ID: {result.sample_id}")
-        print(f"Question: {result.question}")
-        print(f"Response: {result.response}")
-        print(f"Latency: {result.latency:.2f}s")
-        print(f"Tokens: {result.token_usage.get('total_tokens', 0)}")
-        print(f"Model: {result.model}")
-        
-        # Print detailed scoring information
-        if result.scoring_result:
-            print(f"\nScoring Details:")
-            print(f"  Total Score: {result.scoring_result.get('total_score', 0):.3f}")
-            print(f"  Reasoning: {result.scoring_result.get('reasoning', '')}")
-            
-            # Print detailed breakdown if available
-            details = result.scoring_result.get('details', {})
-            if details:
-                print(f"  Details:")
-                for key, value in details.items():
-                    if isinstance(value, float):
-                        print(f"    - {key}: {value:.3f}")
-                    else:
-                        print(f"    - {key}: {value}")
-        
-        print("-"*40)

@@ -11,7 +11,7 @@ import re
 from typing import Dict, Any, Optional
 
 from .base import BaseScorer, ScoreResult
-from ..adapters.openai_compatible_httpx import OpenAICompatibleHttpxAdapter
+from ..adapters.openai_compatible import OpenAICompatibleHttpxAdapter
 
 
 class LLMJudgeScorer(BaseScorer):

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from asyncio import Semaphore
 
 from .dataset.loader import DatasetLoader, EvaluationSample
-from .adapters.openai_compatible_httpx import OpenAICompatibleHttpxAdapter
+from .adapters.openai_compatible import OpenAICompatibleHttpxAdapter
 from .reporter.console import ConsoleReporter
 from .reporter.models import EvaluationResult
 from .metrics.quality_scorer import QualityScorer, calculate_cost

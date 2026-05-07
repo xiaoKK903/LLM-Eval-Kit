@@ -7,8 +7,8 @@ including prompt changes, model comparisons, and RAG system effectiveness.
 
 from .client import EvalClient, run_evaluation
 from .dataset.loader import DatasetLoader
-from .adapters.openai_compatible import OpenAICompatibleAdapter
+from .adapters.openai_compatible import OpenAICompatibleHttpxAdapter
 from .reporter.console import ConsoleReporter
 
 __version__ = "0.1.0"
-__all__ = ["EvalClient", "run_evaluation", "DatasetLoader", "OpenAICompatibleAdapter", "ConsoleReporter"]
+__all__ = ["EvalClient", "run_evaluation", "DatasetLoader", "OpenAICompatibleHttpxAdapter", "ConsoleReporter"]
