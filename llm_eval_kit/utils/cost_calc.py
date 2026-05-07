@@ -6,6 +6,7 @@ CNY pricing: per million tokens (官方定价)
 USD pricing: per 1K tokens (OpenAI-compatible convention)
 """
 
+import sys
 from typing import Dict, Optional
 
 CNY_PRICING: Dict[str, Dict[str, float]] = {
@@ -64,5 +65,8 @@ def format_cost(cost: float, currency: str = "CNY") -> str:
         fen = cost * 100
         return f"{fen:.2f}分"
     if currency == "CNY":
+        # Avoid raw ¥ sign for GBK terminals
+        if sys.stdout.encoding and 'utf' not in sys.stdout.encoding.lower():
+            return f"CNY {cost:.4f}"
         return f"¥{cost:.4f}"
     return f"${cost:.4f}"

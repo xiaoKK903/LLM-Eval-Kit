@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM 评测报告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "SimHei", "SimSun", sans-serif; background: #f5f7fa; color: #333; padding: 30px; }
+.container { max-width: 1100px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div style="background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; border-radius: 12px; padding: 30px 35px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(26,115,232,0.3);">
+  <h1 style="font-size: 26px; font-weight: 600; margin-bottom: 8px;">LLM 评测报告</h1>
+  <p style="font-size: 14px; opacity: 0.85; margin-bottom: 18px;">生成时间：2026-05-07 15:05:02</p>
+  <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+    <div style="background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="font-size: 24px; font-weight: 700;">9</div>
+      <div style="font-size: 12px; opacity: 0.8;">评测样本</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="font-size: 24px; font-weight: 700;">3</div>
+      <div style="font-size: 12px; opacity: 0.8;">对比模型</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="font-size: 14px; font-weight: 700;">客服问答评测集</div>
+      <div style="font-size: 12px; opacity: 0.8;">数据集</div>
+    </div>
+  </div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+  <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #1a73e8;">模型对比总览</h2>
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <thead>
+      <tr style="background: #f0f4f8;">
+        <th style="padding: 10px 12px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">模型名称</th>
+        <th style="padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">平均分</th>
+        <th style="padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">延迟(s)</th>
+        <th style="padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">Token</th>
+        <th style="padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">成本(¥)</th>
+        <th style="padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #ddd;">成功率</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <tr style="background: #e8f0fe; font-weight: 700;">
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8;">deepseek-chat 🏆</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.00</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">1.0</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">355</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.06分</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">100%</td>
+    </tr>
+    <tr style="background: #ffffff; ">
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8;">qwen-turbo</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.00</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.7</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">218</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.01分</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">100%</td>
+    </tr>
+    <tr style="background: #fafafa; ">
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8;">gpt-3.5-turbo</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.00</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">1.3</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">244</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">0.04分</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">100%</td>
+    </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 12px; color: #999; margin-top: 10px;">🏆 标记表示综合最优模型</p>
+</div>
+
+<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px;">
+
+  <div style="background: white; border-radius: 12px; padding: 18px 20px; flex: 1; min-width: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #e65100;">
+    <div style="font-size: 24px; margin-bottom: 8px;">🏆</div>
+    <div style="font-size: 13px; color: #888; margin-bottom: 4px;">综合最优</div>
+    <div style="font-size: 17px; font-weight: 700; color: #e65100; margin-bottom: 4px;">deepseek-chat</div>
+    <div style="font-size: 12px; color: #999;">得分最高 0.00 分</div>
+  </div>
+  <div style="background: white; border-radius: 12px; padding: 18px 20px; flex: 1; min-width: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #2e7d32;">
+    <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
+    <div style="font-size: 13px; color: #888; margin-bottom: 4px;">速度最快</div>
+    <div style="font-size: 17px; font-weight: 700; color: #2e7d32; margin-bottom: 4px;">qwen-turbo</div>
+    <div style="font-size: 12px; color: #999;">平均 0.7s</div>
+  </div>
+  <div style="background: white; border-radius: 12px; padding: 18px 20px; flex: 1; min-width: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #1565c0;">
+    <div style="font-size: 24px; margin-bottom: 8px;">💰</div>
+    <div style="font-size: 13px; color: #888; margin-bottom: 4px;">成本最低</div>
+    <div style="font-size: 17px; font-weight: 700; color: #1565c0; margin-bottom: 4px;">qwen-turbo</div>
+    <div style="font-size: 12px; color: #999;">0.00分/次</div>
+  </div>
+  <div style="background: white; border-radius: 12px; padding: 18px 20px; flex: 1; min-width: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #6a1b9a;">
+    <div style="font-size: 24px; margin-bottom: 8px;">📈</div>
+    <div style="font-size: 13px; color: #888; margin-bottom: 4px;">性价比王</div>
+    <div style="font-size: 17px; font-weight: 700; color: #6a1b9a; margin-bottom: 4px;">deepseek-chat</div>
+    <div style="font-size: 12px; color: #999;">得分/成本比最高</div>
+  </div>
+</div>
+
+<h2 style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #1a73e8;">样本详细结果</h2>
+
+  <div style="background: white; border-radius: 12px; padding: 20px 25px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="font-size: 15px; font-weight: 600; color: #333;">样本 #1</h3>
+    </div>
+    <div style="background: #f9fafb; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px;">
+      <div style="font-size: 12px; color: #888; margin-bottom: 4px;">📝 问题</div>
+      <div style="font-size: 14px; color: #333; line-height: 1.6;">退款多久到账？</div>
+    </div>
+    <div>
+      <div style="font-size: 12px; color: #888; margin-bottom: 8px;">🤖 模型回答</div>
+
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">deepseek-chat</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 1.2s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">一般退款会在3-5个工作日内到账，具体时效取决于支付方式。如果超过5个工作日未到账，建议联系客服查询。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">qwen-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 0.8s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">退款通常在1-3个工作日内处理完成。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">gpt-3.5-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 1.5s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">退款一般3-5个工作日到账。</div>
+        
+      </div>
+    </div>
+  </div>
+  <div style="background: white; border-radius: 12px; padding: 20px 25px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="font-size: 15px; font-weight: 600; color: #333;">样本 #2</h3>
+    </div>
+    <div style="background: #f9fafb; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px;">
+      <div style="font-size: 12px; color: #888; margin-bottom: 4px;">📝 问题</div>
+      <div style="font-size: 14px; color: #333; line-height: 1.6;">怎么改密码？</div>
+    </div>
+    <div>
+      <div style="font-size: 12px; color: #888; margin-bottom: 8px;">🤖 模型回答</div>
+
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">deepseek-chat</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 0.9s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">您可以在「设置→账户安全→修改密码」中找到入口，按页面提示输入原密码和新密码即可完成修改。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">qwen-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 0.7s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">在个人中心点击修改密码，输入原密码和新密码即可。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">gpt-3.5-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 1.1s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">进入设置页面，找到修改密码选项，按提示操作。</div>
+        
+      </div>
+    </div>
+  </div>
+  <div style="background: white; border-radius: 12px; padding: 20px 25px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="font-size: 15px; font-weight: 600; color: #333;">样本 #3</h3>
+    </div>
+    <div style="background: #f9fafb; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px;">
+      <div style="font-size: 12px; color: #888; margin-bottom: 4px;">📝 问题</div>
+      <div style="font-size: 14px; color: #333; line-height: 1.6;">订单未发货怎么办？</div>
+    </div>
+    <div>
+      <div style="font-size: 12px; color: #888; margin-bottom: 8px;">🤖 模型回答</div>
+
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">deepseek-chat</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 1.0s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">如果订单超过承诺时间未发货，建议您：1）在订单详情页点击「催发货」按钮；2）联系在线客服查询库存状态；3）如需取消可申请退款。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">qwen-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 0.6s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">建议联系客服查询发货时间。</div>
+        
+      </div>
+      <div style="border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-weight: 600; font-size: 14px; color: #1a73e8;">gpt-3.5-turbo</span>
+          <span style="background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">得分: N/A</span>
+          <span style="font-size: 12px; color: #999;">延迟: 1.3s</span>
+        </div>
+        <div style="font-size: 13px; color: #555; line-height: 1.6; white-space: pre-wrap;">您可以联系卖家咨询发货进度，或者申请退款。</div>
+        
+      </div>
+    </div>
+  </div>
+
+<div style="text-align: center; padding: 20px 0 10px; font-size: 12px; color: #bbb; border-top: 1px solid #eee; margin-top: 10px;">
+  LLM-Eval-Kit &copy; 2026 &mdash; 生成于 2026-05-07 15:05:02
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="500" viewBox="0 0 720 500">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700');
+      text { font-family: 'Inter', -apple-system, sans-serif; }
+    </style>
+    <linearGradient id="header-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a73e8"/>
+      <stop offset="100%" stop-color="#0d47a1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="720" height="500" rx="8" fill="#f5f7fa"/>
+
+  <!-- Header banner -->
+  <rect x="15" y="15" width="690" height="80" rx="10" fill="url(#header-bg)"/>
+  <text x="35" y="45" fill="#fff" font-size="18" font-weight="700">LLM 评测报告</text>
+  <text x="35" y="65" fill="rgba(255,255,255,0.7)" font-size="11">生成时间：2026-05-07 14:00:00</text>
+
+  <!-- Stats row -->
+  <rect x="35" y="75" width="60" height="40" rx="6" fill="rgba(255,255,255,0.12)"/>
+  <text x="65" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">3</text>
+  <text x="65" y="110" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10">评测样本</text>
+
+  <!-- Overview table -->
+  <rect x="15" y="110" width="690" height="155" rx="10" fill="#fff" opacity="0.95"/>
+  <text x="35" y="132" fill="#1a73e8" font-size="14" font-weight="600">模型对比总览</text>
+
+  <!-- Table header -->
+  <rect x="25" y="142" width="670" height="28" rx="4" fill="#f0f4f8"/>
+  <text x="40" y="161" fill="#555" font-size="11" font-weight="600">模型名称</text>
+  <text x="210" y="161" fill="#555" font-size="11" font-weight="600">平均分</text>
+  <text x="320" y="161" fill="#555" font-size="11" font-weight="600">延迟(s)</text>
+  <text x="420" y="161" fill="#555" font-size="11" font-weight="600">Token</text>
+  <text x="520" y="161" fill="#555" font-size="11" font-weight="600">成本</text>
+  <text x="620" y="161" fill="#555" font-size="11" font-weight="600">成功率</text>
+
+  <!-- Table row 1 - best -->
+  <rect x="25" y="172" width="670" height="30" rx="0" fill="#e8f0fe"/>
+  <text x="40" y="192" fill="#333" font-size="12" font-weight="700">deepseek-chat 🏆</text>
+  <text x="210" y="192" fill="#333" font-size="12" text-anchor="end">0.85</text>
+  <text x="320" y="192" fill="#333" font-size="12" text-anchor="end">1.2</text>
+  <text x="420" y="192" fill="#333" font-size="12" text-anchor="end">130</text>
+  <text x="520" y="192" fill="#333" font-size="12" text-anchor="end">0.03分</text>
+  <text x="620" y="192" fill="#333" font-size="12" text-anchor="end">100%</text>
+
+  <!-- Table row 2 -->
+  <rect x="25" y="202" width="670" height="30" rx="0" fill="#fff"/>
+  <text x="40" y="222" fill="#333" font-size="12">qwen-turbo</text>
+  <text x="210" y="222" fill="#333" font-size="12" text-anchor="end">0.62</text>
+  <text x="320" y="222" fill="#333" font-size="12" text-anchor="end">0.8</text>
+  <text x="420" y="222" fill="#333" font-size="12" text-anchor="end">85</text>
+  <text x="520" y="222" fill="#333" font-size="12" text-anchor="end">0.01分</text>
+  <text x="620" y="222" fill="#333" font-size="12" text-anchor="end">100%</text>
+
+  <!-- Conclusion cards -->
+  <rect x="15" y="280" width="165" height="90" rx="10" fill="#fff"/>
+  <text x="35" y="305" font-size="20">🏆</text>
+  <text x="35" y="325" fill="#888" font-size="11">综合最优</text>
+  <text x="35" y="345" fill="#e65100" font-size="14" font-weight="700">deepseek-chat</text>
+  <text x="35" y="362" fill="#999" font-size="10">得分 0.85</text>
+
+  <rect x="190" y="280" width="165" height="90" rx="10" fill="#fff"/>
+  <text x="210" y="305" font-size="20">⚡</text>
+  <text x="210" y="325" fill="#888" font-size="11">速度最快</text>
+  <text x="210" y="345" fill="#2e7d32" font-size="14" font-weight="700">qwen-turbo</text>
+  <text x="210" y="362" fill="#999" font-size="10">平均 0.8s</text>
+
+  <rect x="365" y="280" width="165" height="90" rx="10" fill="#fff"/>
+  <text x="385" y="305" font-size="20">💰</text>
+  <text x="385" y="325" fill="#888" font-size="11">成本最低</text>
+  <text x="385" y="345" fill="#1565c0" font-size="14" font-weight="700">qwen-turbo</text>
+  <text x="385" y="362" fill="#999" font-size="10">0.01分/次</text>
+
+  <rect x="540" y="280" width="165" height="90" rx="10" fill="#fff"/>
+  <text x="560" y="305" font-size="20">📈</text>
+  <text x="560" y="325" fill="#888" font-size="11">性价比王</text>
+  <text x="560" y="345" fill="#6a1b9a" font-size="14" font-weight="700">deepseek-chat</text>
+  <text x="560" y="362" fill="#999" font-size="10">得分/成本比最高</text>
+
+  <!-- Footer note -->
+  <text x="360" y="420" text-anchor="middle" fill="#bbb" font-size="11">LLM-Eval-Kit © 2026 — 生成于 2026-05-07</text>
+
+  <!-- Sample details section -->
+  <rect x="15" y="440" width="690" height="45" rx="10" fill="#fff"/>
+  <text x="35" y="462" fill="#1a73e8" font-size="14" font-weight="600">样本详细结果</text>
+  <text x="155" y="462" fill="#888" font-size="11">点击查看每个模型的具体回答和评分</text>
+</svg>

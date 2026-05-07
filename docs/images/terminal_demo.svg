@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700');
+      text { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+    </style>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d2d2d"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window frame -->
+  <rect x="0" y="0" width="720" height="420" rx="10" fill="#1e1e1e"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="720" height="36" rx="10" fill="url(#header)"/>
+  <rect x="0" y="26" width="720" height="10" fill="url(#header)"/>
+  <circle cx="18" cy="18" r="5" fill="#ff5f56"/>
+  <circle cx="34" cy="18" r="5" fill="#ffbd2e"/>
+  <circle cx="50" cy="18" r="5" fill="#27c93f"/>
+  <text x="360" y="23" text-anchor="middle" fill="#999" font-size="11">llm-eval-kit — 规则评分 Demo</text>
+
+  <!-- Terminal content -->
+  <text x="20" y="62" fill="#888" font-size="12">$ python examples/rule_scorer_demo.py</text>
+
+  <!-- Question 1 -->
+  <text x="20" y="90" fill="#bbb" font-size="12">用例 1:</text>
+  <text x="20" y="108" fill="#4ec9b0" font-size="12">  综合分: <tspan fill="#fff">0.5040</tspan></text>
+  <text x="20" y="126" fill="#bbb" font-size="12">  详情: keyword_match=1.0</text>
+  <text x="100" y="144" fill="#bbb" font-size="12">length=0.59</text>
+  <text x="100" y="162" fill="#bbb" font-size="12">structure=0.0</text>
+  <text x="100" y="180" fill="#bbb" font-size="12">completeness=0.15</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="198" x2="700" y2="198" stroke="#333" stroke-width="1"/>
+
+  <!-- Question 2 -->
+  <text x="20" y="222" fill="#bbb" font-size="12">用例 2 (短回答):</text>
+  <text x="20" y="240" fill="#e06c75" font-size="12">  综合分: <tspan fill="#fff">0.0000</tspan></text>
+  <text x="20" y="258" fill="#888" font-size="12">  详情: 全部维度均为 0</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="278" x2="700" y2="278" stroke="#333" stroke-width="1"/>
+
+  <!-- Cost section -->
+  <text x="20" y="302" fill="#888" font-size="12">$ python examples/test_quality_scoring.py</text>
+  <text x="20" y="326" fill="#bbb" font-size="12">成本计算:</text>
+  <text x="20" y="348" fill="#888" font-size="11">qwen-turbo    150  350   0.03分</text>
+  <text x="20" y="366" fill="#888" font-size="11">deepseek-chat 200  500   0.12分</text>
+  <text x="20" y="384" fill="#888" font-size="11">gpt-4         300  700  CNY 0.0510</text>
+
+  <!-- Blinking cursor -->
+  <rect x="200" y="388" width="8" height="14" fill="#fff" opacity="0.5"/>
+</svg>

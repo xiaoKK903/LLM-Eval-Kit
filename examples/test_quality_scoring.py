@@ -54,12 +54,14 @@ async def test_quality_scoring():
         ("gpt-4", 300, 700),
     ]
 
-    print(f"{'模型':<20} {'输入':>6} {'输出':>6} {'成本(¥)':>12} {'成本($)':>12}")
-    print("-" * 56)
+    print(f"{'模型':<20} {'输入':>6} {'输出':>6} {'成本(CNY)':>14} {'成本(USD)':>14}")
+    print("-" * 60)
     for model, inp, out in test_costs:
         cny = calculate_cost_cny(model, inp, out)
         usd = calculate_cost_usd(model, inp, out)
-        print(f"{model:<20} {inp:>6} {out:>6} {format_cost(cny):>12} {format_cost(usd):>12}")
+        cny_s = format_cost(cny, "CNY")
+        usd_s = format_cost(usd, "USD")
+        print(f"{model:<20} {inp:>6} {out:>6} {cny_s:>14} {usd_s:>14}")
     print()
 
 
