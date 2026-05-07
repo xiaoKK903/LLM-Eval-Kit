@@ -43,9 +43,9 @@ def create_mock_data():
             response=qwen_responses[i],
             latency=6.2 + i * 0.5,
             token_usage={
-                "prompt_tokens": 15 + i * 2,
-                "completion_tokens": 20 + i * 3,
-                "total_tokens": 35 + i * 5,
+                "prompt_tokens": 120 + i * 20,
+                "completion_tokens": 180 + i * 30,
+                "total_tokens": 300 + i * 50,
             },
             model="qwen-turbo",
             scoring_result={
@@ -65,9 +65,9 @@ def create_mock_data():
             response=deepseek_responses[i],
             latency=10.8 + i * 0.8,
             token_usage={
-                "prompt_tokens": 15 + i * 2,
-                "completion_tokens": 25 + i * 4,
-                "total_tokens": 40 + i * 6,
+                "prompt_tokens": 120 + i * 20,
+                "completion_tokens": 250 + i * 40,
+                "total_tokens": 370 + i * 60,
             },
             model="deepseek-chat",
             scoring_result={

@@ -78,47 +78,24 @@ class ModelComparator:
     """Comparator for comparing multiple LLM models based on evaluation results."""
     
     # Default pricing in Chinese Yuan per million tokens (¥/百万token)
+    # Only includes models we have actually tested
     DEFAULT_PRICING = {
         # Alibaba Qwen series
-        "qwen-turbo": {"input": 0.3, "output": 0.6},    # ¥0.3/百万输入token, ¥0.6/百万输出token
-        "qwen-plus": {"input": 0.8, "output": 2.0},     # ¥0.8/百万输入token, ¥2.0/百万输出token
-        "qwen-max": {"input": 2.0, "output": 4.0},      # ¥2.0/百万输入token, ¥4.0/百万输出token
-        
+        "qwen-turbo": {"input": 0.3, "output": 0.6},
+        "qwen-plus": {"input": 0.8, "output": 2.0},
+        "qwen-max": {"input": 2.0, "output": 4.0},
+
         # DeepSeek series
-        "deepseek-chat": {"input": 1.0, "output": 2.0}, # ¥1.0/百万输入token, ¥2.0/百万输出token
-        "deepseek-coder": {"input": 1.0, "output": 2.0}, # ¥1.0/百万输入token, ¥2.0/百万输出token
-        
+        "deepseek-chat": {"input": 1.0, "output": 2.0},
+        "deepseek-coder": {"input": 1.0, "output": 2.0},
+
         # OpenAI series
-        "gpt-3.5-turbo": {"input": 1.5, "output": 2.0}, # ¥1.5/百万输入token, ¥2.0/百万输出token
-        "gpt-4": {"input": 30.0, "output": 60.0},       # ¥30/百万输入token, ¥60/百万输出token
-        "gpt-4-turbo": {"input": 15.0, "output": 30.0}, # ¥15/百万输入token, ¥30/百万输出token
-        
-        # Zhipu AI series
-        "glm-3-turbo": {"input": 0.5, "output": 0.5},   # ¥0.5/百万输入token, ¥0.5/百万输出token
-        "glm-4": {"input": 0.8, "output": 1.6},         # ¥0.8/百万输入token, ¥1.6/百万输出token
-        
-        # Baidu ERNIE series
-        "ernie-bot-turbo": {"input": 0.8, "output": 0.8}, # ¥0.8/百万输入token, ¥0.8/百万输出token
-        "ernie-bot": {"input": 0.12, "output": 0.12},   # ¥0.12/百万输入token, ¥0.12/百万输出token
-        
-        # iFlytek Spark series
-        "spark-v2": {"input": 0.36, "output": 0.36},    # ¥0.36/百万输入token, ¥0.36/百万输出token
-        "spark-v3": {"input": 0.5, "output": 0.5},      # ¥0.5/百万输入token, ¥0.5/百万输出token
-        
-        # ByteDance Doubao series
-        "doubao-lite": {"input": 0.8, "output": 0.8},   # ¥0.8/百万输入token, ¥0.8/百万输出token
-        "doubao-pro": {"input": 0.8, "output": 0.8},    # ¥0.8/百万输入token, ¥0.8/百万输出token
-        
-        # Anthropic Claude series (approximate conversion from USD)
-        "claude-3-sonnet": {"input": 3.0, "output": 15.0}, # ¥3/百万输入token, ¥15/百万输出token
-        "claude-3-opus": {"input": 15.0, "output": 75.0},  # ¥15/百万输入token, ¥75/百万输出token
-        
-        # Google Gemini series (approximate conversion from USD)
-        "gemini-pro": {"input": 0.35, "output": 0.7},    # ¥0.35/百万输入token, ¥0.7/百万输出token
-        "gemini-ultra": {"input": 0.7, "output": 1.4},   # ¥0.7/百万输入token, ¥1.4/百万输出token
-        
+        "gpt-3.5-turbo": {"input": 1.5, "output": 2.0},
+        "gpt-4": {"input": 30.0, "output": 60.0},
+        "gpt-4-turbo": {"input": 15.0, "output": 30.0},
+
         # Default fallback pricing
-        "default": {"input": 1.0, "output": 2.0}        # Default pricing for unknown models
+        "default": {"input": 1.0, "output": 2.0}
     }
     
     def __init__(self, custom_pricing: Optional[Dict[str, Dict[str, float]]] = None):

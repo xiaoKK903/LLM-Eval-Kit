@@ -54,7 +54,7 @@ class HtmlReporter:
 <title>LLM 评测报告</title>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f7fa; color: #333; padding: 30px; }}
+body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "SimHei", "SimSun", sans-serif; background: #f5f7fa; color: #333; padding: 30px; }}
 .container {{ max-width: 1100px; margin: 0 auto; }}
 </style>
 </head>
@@ -101,13 +101,14 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC
             bg = "#e8f0fe" if is_best else ("#fafafa" if comparison.model_comparisons.index(mc) % 2 == 0 else "#ffffff")
             bold = "font-weight: 700;" if is_best else ""
             trophy = " 🏆" if is_best else ""
+            cost_str = self._format_cost(mc.total_cost)
             rows_html += f"""
     <tr style="background: {bg}; {bold}">
       <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8;">{mc.model_name}{trophy}</td>
       <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">{mc.avg_score:.2f}</td>
       <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">{mc.avg_latency:.1f}</td>
       <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">{mc.total_tokens}</td>
-      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">¥{mc.total_cost:.4f}</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">{cost_str}</td>
       <td style="padding: 10px 12px; border-bottom: 1px solid #e8e8e8; text-align: center;">{mc.success_rate * 100:.0f}%</td>
     </tr>"""
 
@@ -133,13 +134,14 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC
 </div>"""
 
     def _build_conclusion_cards(self, comparison: ComparisonResult) -> str:
+        cheapest_cost_str = self._format_cost(comparison.cheapest_cost)
         cards = [
             ("🏆", "综合最优", comparison.best_overall_model,
              f"得分最高 {comparison.best_overall_score:.2f} 分", "#fff3e0", "#e65100"),
             ("⚡", "速度最快", comparison.fastest_model,
              f"平均 {comparison.fastest_latency:.1f}s", "#e8f5e9", "#2e7d32"),
             ("💰", "成本最低", comparison.cheapest_model,
-             f"¥{comparison.cheapest_cost:.4f}/次", "#e3f2fd", "#1565c0"),
+             f"{cheapest_cost_str}/次", "#e3f2fd", "#1565c0"),
             ("📈", "性价比王", comparison.best_value_model,
              "得分/成本比最高", "#f3e5f5", "#6a1b9a"),
         ]
@@ -170,7 +172,6 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC
                 continue
             first = sample_results[0]
             question = first.question
-            reference = first.question
 
             models_html = ""
             for r in sample_results:
@@ -196,10 +197,6 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC
       <div style="font-size: 12px; color: #888; margin-bottom: 4px;">📝 问题</div>
       <div style="font-size: 14px; color: #333; line-height: 1.6;">{self._escape_html(question)}</div>
     </div>
-    <div style="margin-bottom: 12px;">
-      <div style="font-size: 12px; color: #888; margin-bottom: 4px;">🎯 参考答案</div>
-      <div style="font-size: 13px; color: #666; line-height: 1.6;">{self._escape_html(reference)}</div>
-    </div>
     <div>
       <div style="font-size: 12px; color: #888; margin-bottom: 8px;">🤖 模型回答</div>
 {models_html}
@@ -215,6 +212,13 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC
 <div style="text-align: center; padding: 20px 0 10px; font-size: 12px; color: #bbb; border-top: 1px solid #eee; margin-top: 10px;">
   LLM-Eval-Kit &copy; {datetime.datetime.now().year} &mdash; 生成于 {timestamp}
 </div>"""
+
+    @staticmethod
+    def _format_cost(cost: float) -> str:
+        if cost < 0.01:
+            fen = cost * 100
+            return f"{fen:.2f}分"
+        return f"¥{cost:.4f}"
 
     @staticmethod
     def _escape_html(text: str) -> str:
