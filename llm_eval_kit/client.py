@@ -13,7 +13,8 @@ from asyncio import Semaphore
 
 from .dataset.loader import DatasetLoader, EvaluationSample
 from .adapters.openai_compatible_httpx import OpenAICompatibleHttpxAdapter
-from .reporter.console import ConsoleReporter, EvaluationResult
+from .reporter.console import ConsoleReporter
+from .reporter.models import EvaluationResult
 from .metrics.quality_scorer import QualityScorer, calculate_cost
 
 
@@ -206,6 +207,63 @@ class EvalClient:
                 except Exception as e:
                     # Re-raise the exception to be handled by the caller
                     raise Exception(f"Error evaluating sample {sample.id}: {e}")
+    
+    async def evaluate_samples(self, samples: List[EvaluationSample], scorer) -> List[EvaluationResult]:
+        """
+        Evaluate a list of samples directly without loading from file.
+        
+        Args:
+            samples: List of evaluation samples
+            scorer: Scoring engine to use
+            
+        Returns:
+            List of evaluation results
+        """
+        if not samples:
+            return []
+        
+        # Initialize model adapter if not already done
+        if not self.model_adapter:
+            # Use a default config for the adapter
+            default_config = {
+                "base_url": "https://api.openai.com/v1",
+                "api_key": "dummy",
+                "model": "gpt-3.5-turbo",
+                "timeout": 30
+            }
+            self.model_adapter = OpenAICompatibleHttpxAdapter(default_config)
+        
+        # Initialize reporter
+        self.reporter = ConsoleReporter(verbose=False)
+        
+        # Evaluate each sample
+        results = []
+        for sample in samples:
+            try:
+                # Generate response
+                response = await self.model_adapter.generate(sample.question)
+                
+                # Score the response
+                scoring_result = scorer.score(sample.question, response.text, sample.reference)
+                
+                # Create evaluation result
+                result = EvaluationResult(
+                    sample_id=sample.id,
+                    question=sample.question,
+                    response=response.text,
+                    latency=response.latency,
+                    token_usage=response.token_usage,
+                    model=self.model_adapter.model_name,
+                    scoring_result=scoring_result.to_dict()
+                )
+                
+                results.append(result)
+                
+            except Exception as e:
+                print(f"Error evaluating sample {sample.id}: {e}")
+                continue
+        
+        return results
     
     def _report_results(self, results: List[EvaluationResult], 
                        config: EvaluationConfig) -> None:

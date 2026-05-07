@@ -6,22 +6,8 @@ table format in the console.
 """
 
 from typing import List, Dict, Any, Optional
-from dataclasses import dataclass
-
-
-@dataclass
-class EvaluationResult:
-    """Represents the result of evaluating a single sample."""
-    
-    sample_id: str
-    question: str
-    response: str
-    latency: float
-    token_usage: Dict[str, int]
-    model: str
-    quality_scores: Dict[str, float] = None
-    cost: float = 0.0
-    scoring_result: Optional[Dict[str, Any]] = None
+from .models import EvaluationResult
+from .comparator import ModelComparator, ComparisonResult
 
 
 class ConsoleReporter:
@@ -173,6 +159,135 @@ class ConsoleReporter:
         print("\n" + "-"*40)
         print("Single Evaluation Result")
         print("-"*40)
+
+    def _get_display_width(self, text: str) -> int:
+        """
+        Calculate display width considering Chinese characters.
+        
+        Args:
+            text: Text to calculate width for
+            
+        Returns:
+            Display width (Chinese characters count as 2)
+        """
+        width = 0
+        for char in text:
+            # Chinese characters have width 2, others have width 1
+            if '\u4e00' <= char <= '\u9fff':
+                width += 2
+            else:
+                width += 1
+        return width
+    
+    def _pad_text(self, text: str, width: int, align: str = 'left') -> str:
+        """
+        Pad text to specified width considering Chinese characters.
+        
+        Args:
+            text: Text to pad
+            width: Target width
+            align: Alignment ('left', 'right', 'center')
+            
+        Returns:
+            Padded text
+        """
+        text_width = self._get_display_width(text)
+        
+        if text_width >= width:
+            return text
+        
+        padding = width - text_width
+        
+        if align == 'left':
+            return text + ' ' * padding
+        elif align == 'right':
+            return ' ' * padding + text
+        else:  # center
+            left_padding = padding // 2
+            right_padding = padding - left_padding
+            return ' ' * left_padding + text + ' ' * right_padding
+    
+    def print_comparison_report(self, results: List[EvaluationResult], 
+                              custom_pricing: Optional[Dict[str, Dict[str, float]]] = None) -> None:
+        """
+        Print a comprehensive comparison report for multiple models.
+        
+        Args:
+            results: List of evaluation results from multiple models
+            custom_pricing: Custom pricing configuration for models
+        """
+        if not results:
+            print("No results to compare.")
+            return
+        
+        # Create comparator and generate comparison
+        comparator = ModelComparator(custom_pricing)
+        comparison_result = comparator.compare_models(results)
+        
+        # Print header
+        header_width = 80
+        print("\n" + "═" * header_width)
+        print(self._pad_text("模型评测对比报告", header_width, 'center'))
+        print("═" * header_width)
+        
+        # Print table header
+        column_widths = [14, 8, 8, 10, 10, 8]  # Model, Score, Latency, Token, Cost, Success Rate
+        headers = ["模型名称", "平均分", "延迟(s)", "Token", "成本(¥)", "成功率"]
+        
+        header_line = ""
+        for i, header in enumerate(headers):
+            header_line += self._pad_text(header, column_widths[i], 'center')
+        
+        print(header_line)
+        print("─" * sum(column_widths))
+        
+        # Print model data
+        for comparison in comparison_result.model_comparisons:
+            row_data = [
+                comparison.model_name,
+                f"{comparison.avg_score:.2f}",
+                f"{comparison.avg_latency:.1f}",
+                f"{comparison.total_tokens}",
+                f"¥{comparison.total_cost:.4f}",
+                f"{comparison.success_rate * 100:.0f}%"
+            ]
+            
+            row_line = ""
+            for i, data in enumerate(row_data):
+                align = 'right' if i > 0 else 'left'  # Model name left-aligned, others right
+                row_line += self._pad_text(data, column_widths[i], align)
+            
+            print(row_line)
+        
+        print("─" * sum(column_widths))
+        
+        # Print comparison conclusions
+        print("\n" + "🏆 综合最优：" + comparison_result.best_overall_model + 
+              f"    （得分最高 {comparison_result.best_overall_score:.2f}）")
+        print("⚡ 速度最快：" + comparison_result.fastest_model + 
+              f"   （平均 {comparison_result.fastest_latency:.1f}s）")
+        print("💰 成本最低：" + comparison_result.cheapest_model + 
+              f"   （¥{comparison_result.cheapest_cost:.4f}/次）")
+        print("📈 性价比王：" + comparison_result.best_value_model + 
+              f"   （得分/成本比最高）")
+        
+        print("═" * header_width)
+        
+        # Print pricing information
+        print("\n💡 成本计算说明：")
+        for comparison in comparison_result.model_comparisons:
+            pricing = comparator.get_pricing_info(comparison.model_name)
+            print(f"   {comparison.model_name}: " +
+                  f"输入 ¥{pricing['input']}/百万token, " +
+                  f"输出 ¥{pricing['output']}/百万token")
+        
+        print("\n📊 评测总结：")
+        print(f"   总样本数: {sum(c.sample_count for c in comparison_result.model_comparisons)}")
+        print(f"   评测模型: {', '.join(c.model_name for c in comparison_result.model_comparisons)}")
+        print(f"   平均延迟范围: {min(c.avg_latency for c in comparison_result.model_comparisons):.1f}s - " +
+              f"{max(c.avg_latency for c in comparison_result.model_comparisons):.1f}s")
+        print(f"   成本范围: ¥{min(c.total_cost for c in comparison_result.model_comparisons):.4f} - " +
+              f"¥{max(c.total_cost for c in comparison_result.model_comparisons):.4f}")
         
         print(f"ID: {result.sample_id}")
         print(f"Question: {result.question}")
